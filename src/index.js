@@ -5,7 +5,6 @@ const axios = require('axios');
 const https = require('https')
 //perguntar ao usuario o usuario a ser travado
 const askUser = require('ask-user');
-const { notStrictEqual } = require('assert');
 
 let api = undefined;
 let user = undefined;

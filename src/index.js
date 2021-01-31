@@ -1,9 +1,6 @@
 const LCUConnector = require('lcu-connector');
-//definindo o lcuconnector para conectar o lcu
 const axios = require('axios');
-//definindo o axios para fazer requests
 const https = require('https')
-//perguntar ao usuario o usuario a ser travado
 const askUser = require('ask-user');
 
 let api = undefined;
@@ -14,12 +11,10 @@ const agent = new https.Agent({
     rejectUnauthorized: false,
 });
 
-//defindo meio q um sleep
 function delay(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
-//conectando ao cliente
 connector.on('connect', async(credentials) => {
     api = axios.create({
         baseURL: `https://127.0.0.1:${credentials.port}`,
@@ -32,7 +27,6 @@ connector.on('connect', async(credentials) => {
     });
 })
 
-//iniciando 
 connector.start();
 
 async function main() {
@@ -43,7 +37,6 @@ async function main() {
         return console.log('16 char max.');
 
       const nick = nickxd.replace(' ', '_');
-      //pegar o id do usuario a ser travado
       const getID = await api({
         method: 'GET',
         url: `/lol-summoner/v1/summoners?name=${nick}`,
@@ -56,11 +49,9 @@ async function main() {
 
       const summonerID = getID.data.summonerId;
 
-      // info pra enviar no post pra invitar pra sala
       const data = [{ toSummonerId: summonerID }];
       let flag = false;
       do {
-          // convidando pra sala
         const invite = await api({
           method: 'POST',
           url: '/lol-lobby/v2/lobby/invitations',
@@ -70,7 +61,6 @@ async function main() {
 
         console.log(`INVITE\n` + invite.status);
         
-        //kickando para cancelar o convite
         const deny = await api({
           method: 'POST',
           url: `/lol-lobby/v2/lobby/members/${summonerID}/kick`,
@@ -78,7 +68,6 @@ async function main() {
         });
 
         console.log(`REMOVE\n`, + deny.status);
-        //espere 500ms e repeat
         await delay(500);
       } while (flag === false);
     });
